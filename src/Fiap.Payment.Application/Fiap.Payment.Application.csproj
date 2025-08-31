@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Payment\Models\Response\" />
     <Folder Include="Validators\PaymentValidators\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fiap.Payment.Domain\Fiap.Payment.Domain.csproj" />
+    <ProjectReference Include="..\Fiap.Payment.Infra.CrossCutting.Http\Fiap.Payment.Infra.CrossCutting.Http.csproj" />
   </ItemGroup>
 
   <ItemGroup>

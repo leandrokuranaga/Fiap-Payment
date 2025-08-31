@@ -1,22 +1,20 @@
 <Solution>
-  <Folder Name="/1. Api Layer/">
+  <Folder Name="/Adapters/" />
+  <Folder Name="/Adapters/Inbound/">
     <Project Path="src/Fiap.Payment.Api/Fiap.Payment.Api/Fiap.Payment.Api.csproj" />
   </Folder>
-  <Folder Name="/2. Application Layer/">
-    <Project Path="src/Fiap.Payment.Application/Fiap.Payment.Application.csproj" />
-  </Folder>
-  <Folder Name="/3. Domain Layer/">
-    <Project Path="src/Fiap.Payment.Domain/Fiap.Payment.Domain.csproj" />
-  </Folder>
-  <Folder Name="/4. Infra Layer/">
-    <Project Path="src/Fiap.Payment.Infra.CrossCutting.CacheService/Fiap.Payment.Infra.CrossCutting.CacheService.csproj" />
-    <Project Path="src/Fiap.Payment.Infra.HostedService/Fiap.Payment.Infra.HostedService.csproj" />
-    <Project Path="src/Fiap.Payment.Infra.Utils/Fiap.Payment.Infra.Utils.csproj" />
+  <Folder Name="/Adapters/Outbound/">
     <Project Path="src/Fiap.Payment.Infra.CrossCutting.Http/Fiap.Payment.Infra.CrossCutting.Http.csproj" Id="38c3ff00-f608-461d-bf34-89514bea03b1" />
     <Project Path="src/Fiap.Payment.Infra.CrossCutting.IoC/Fiap.Payment.Infra.CrossCutting.IoC.csproj" />
     <Project Path="src/Fiap.Payment.Infra.Data/Fiap.Payment.Infra.Data.csproj" />
+    <Project Path="src/Fiap.Payment.Infra.HostedService/Fiap.Payment.Infra.HostedService.csproj" />
+    <Project Path="src/Fiap.Payment.Infra.Utils/Fiap.Payment.Infra.Utils.csproj" />
   </Folder>
-  <Folder Name="/5. Tests Layer/">
+  <Folder Name="/Core/">
+    <Project Path="src/Fiap.Payment.Application/Fiap.Payment.Application.csproj" />
+    <Project Path="src/Fiap.Payment.Domain/Fiap.Payment.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Tests Layer/">
     <Project Path="test/Fiap.Payment.Unit.Tests/Fiap.Payment.Unit.Tests.csproj" />
   </Folder>
 </Solution>

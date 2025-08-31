@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Fiap.Payment.Domain.SeedWork;
 
 namespace Fiap.Payment.Domain.PaymentAggregate
 {
-    internal interface IPaymentRepository
+    public interface IPaymentRepository : IBaseRepository<Payment>, IUnitOfWork
     {
     }
 }

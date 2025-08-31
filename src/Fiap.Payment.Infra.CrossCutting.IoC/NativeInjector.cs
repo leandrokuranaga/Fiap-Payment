@@ -1,14 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Fiap.Payment.Application.Payment.Services;
 using Fiap.Payment.Domain.OutboxAggregate;
+using Fiap.Payment.Domain.PaymentAggregate;
 using Fiap.Payment.Domain.SeedWork;
-using Fiap.Payment.Infra.CrossCutting.CacheService.Services;
+using Fiap.Payment.Infra.CrossCutting.Http.Stripe;
 using Fiap.Payment.Infra.Data;
 using Fiap.Payment.Infra.Data.Repositories;
 using Fiap.Payment.Infra.HostedService;
 using Fiap.Payment.Infra.Utils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
@@ -18,7 +19,6 @@ using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
-using StackExchange.Redis;
 
 namespace Fiap.Payment.Infra.CrossCutting.IoC;
 
@@ -29,7 +29,6 @@ public static class NativeInjector
     {
         AddLocalHttpClients(services, configuration);
         AddLocalServices(services, configuration);
-        AddRedisDatabase(services, configuration);
         AddObservability(services, configuration, services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>());
         AddDatabase(services, configuration);
     }
@@ -47,7 +46,10 @@ public static class NativeInjector
             options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
     }
 
-    public static void AddLocalHttpClients(this IServiceCollection services, IConfiguration configuration) { }
+    public static void AddLocalHttpClients(this IServiceCollection services, IConfiguration configuration) 
+    {
+        services.AddScoped<IStripeService, StripeService>();
+    }
 
     public static void AddLocalServices(this IServiceCollection services, IConfiguration configuration)
     {
@@ -58,45 +60,13 @@ public static class NativeInjector
 
         #region Repositories
         services.AddScoped<IOutboxRepository, OutboxRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
         #endregion
 
         #region Services
-
+        services.AddScoped<IPaymentService, PaymentService>();
         #endregion
     }
-
-    public static void AddRedisDatabase(this IServiceCollection services, IConfiguration configuration)
-    {
-        var redisConnectionString = configuration.GetConnectionString("Redis");
-        
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = redisConnectionString;
-            options.ConfigurationOptions = ConfigurationOptions.Parse(redisConnectionString);
-            options.ConfigurationOptions.AbortOnConnectFail = false;
-            options.ConfigurationOptions.ConnectTimeout = 10000;
-            options.ConfigurationOptions.SyncTimeout = 10000;
-            options.ConfigurationOptions.ConnectRetry = 5;
-            options.ConfigurationOptions.ReconnectRetryPolicy = new ExponentialRetry(5000);
-        });
-
-        services.AddSingleton<IConnectionMultiplexer>(provider =>
-        {
-            return ConnectionMultiplexer.Connect(redisConnectionString);
-        });
-
-        services.AddHybridCache(options =>
-        {
-            options.DefaultEntryOptions = new HybridCacheEntryOptions
-            {
-                LocalCacheExpiration = TimeSpan.FromMinutes(5),
-                Expiration = TimeSpan.FromMinutes(60)
-            };
-        });
-        
-        services.AddSingleton<ICacheService, CacheService.Services.CacheService>();
-    }
-
     public static IServiceCollection AddObservability(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         ConfigureSerilog(services, configuration, environment);
@@ -159,7 +129,7 @@ public static class NativeInjector
         var serviceName = configuration["DistributedTracing:Jaeger:ServiceName"];
         var endpoint = configuration["DistributedTracing:Jaeger:Endpoint"];
         var host = configuration["DistributedTracing:Jaeger:Host"];
-        var port = int.Parse(configuration["DistributedTracing:Jaeger:Port"] ?? "14268");
+        var port = int.Parse(configuration["DistributedTracing:Jaeger:Port"]);
 
         services.AddOpenTelemetry()
             .WithTracing(tracing => tracing

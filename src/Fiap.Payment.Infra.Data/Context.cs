@@ -8,8 +8,12 @@ namespace Fiap.Payment.Infra.Data
         {
             Database.Migrate();
         }
+
+        public DbSet<Domain.PaymentAggregate.Payment> Payments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(Context).Assembly);
             base.OnModelCreating(modelBuilder);
         }
     }
