@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Fiap.Payment.Application.Payment.Services;
+using Fiap.Payment.Application.Webhook.Services;
+using Fiap.Payment.Common.Http.CRM;
+using Fiap.Payment.Common.Http.FCG;
 using Fiap.Payment.Domain.OutboxAggregate;
 using Fiap.Payment.Domain.PaymentAggregate;
 using Fiap.Payment.Domain.SeedWork;
@@ -17,6 +20,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
+using Refit;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
 
@@ -48,6 +52,17 @@ public static class NativeInjector
 
     public static void AddLocalHttpClients(this IServiceCollection services, IConfiguration configuration) 
     {
+        var urlFCG = configuration["ExternalServices:FCGUrl"];
+        var urlCRM = configuration["ExternalServices:CRMUrl"];
+
+        services
+            .AddRefitClient<IFCGService>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(urlFCG));
+
+        services
+            .AddRefitClient<ICRMService>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(urlCRM));
+
         services.AddScoped<IStripeService, StripeService>();
     }
 
@@ -65,6 +80,7 @@ public static class NativeInjector
 
         #region Services
         services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<IWebhookService, WebhookService>();
         #endregion
     }
     public static IServiceCollection AddObservability(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
@@ -107,13 +123,13 @@ public static class NativeInjector
             .Enrich.WithEnvironmentName()
             .Enrich.WithMachineName()
             .Enrich.WithProcessId()
-            .Enrich.WithProperty("Application", "Fiap")
+            .Enrich.WithProperty("Application", "Fiap-Payment")
             .WriteTo.Console()
             .WriteTo.GrafanaLoki(
                 uri: lokiUri,
                 labels:
                 [
-                    new() { Key = "app", Value = "dotnet-api" },
+                    new() { Key = "app", Value = "dotnet-api-payment" },
                     new() { Key = "env", Value = environment.EnvironmentName }
                 ])
             .CreateLogger();

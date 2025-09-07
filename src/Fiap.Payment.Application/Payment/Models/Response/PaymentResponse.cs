@@ -13,8 +13,7 @@ namespace Fiap.Payment.Application.Payment.Models.Response
             return new PaymentResponse
             {
                 Message = payment.Message,
-                PaymentUrl = payment.PaymentUrl,
-                Success = payment.Success
+                PaymentUrl = payment.PaymentUrl
             };
         }
     }

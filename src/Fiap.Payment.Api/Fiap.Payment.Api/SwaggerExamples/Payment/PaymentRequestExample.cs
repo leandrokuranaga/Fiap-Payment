@@ -12,10 +12,7 @@ namespace Fiap.Payment.Api.SwaggerExamples.Payment
             return new PaymentRequest
             {
                 UserId = 1,
-                GameId = 6,
-                GameName = "Minecraft",
-                UserEmail = "le.s.kuranaga@gmail.com",
-                Price = 26.95M
+                GameId = 6
             };
         }
     }

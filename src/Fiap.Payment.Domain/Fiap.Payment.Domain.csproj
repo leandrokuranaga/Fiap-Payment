@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="PaymentAggregate\Enums\" />
-    <Folder Include="PaymentAggregate\Events\" />
     <Folder Include="SeedWork\Enums\" />
   </ItemGroup>
 

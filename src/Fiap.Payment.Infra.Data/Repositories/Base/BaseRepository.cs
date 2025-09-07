@@ -2,11 +2,12 @@
 using System.Linq.Expressions;
 using Fiap.Payment.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Fiap.Payment.Infra.Data.Repositories.Base;
 
 [ExcludeFromCodeCoverage]
-public abstract class BaseRepository<TEntity>(Context context) : UnitOfWork(context), IBaseRepository<TEntity> where TEntity : class
+public abstract class BaseRepository<TEntity>(Context context, ILogger<UnitOfWork> logger) : UnitOfWork(context, logger), IBaseRepository<TEntity> where TEntity : class
 {
     protected DbSet<TEntity> dbSet = context.Set<TEntity>();
 

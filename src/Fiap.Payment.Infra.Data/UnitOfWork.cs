@@ -1,10 +1,10 @@
-﻿
-using Fiap.Payment.Domain.SeedWork;
+﻿using Fiap.Payment.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace Fiap.Payment.Infra.Data
 {
-    public class UnitOfWork(Context context) : IUnitOfWork, IDisposable
+    public class UnitOfWork(Context context, ILogger<UnitOfWork> logger) : IUnitOfWork, IDisposable
     {
         private IDbContextTransaction? _transaction;
         private bool _disposed = false;
@@ -56,7 +56,7 @@ namespace Fiap.Payment.Infra.Data
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Erro ao tentar rollback: {ex.Message}");
+                    logger.LogError("Error trying to rollback: ", ex.Message);
                 }
                 finally
                 {
@@ -65,7 +65,6 @@ namespace Fiap.Payment.Infra.Data
                 }
             }
         }
-
 
         public void Dispose()
         {

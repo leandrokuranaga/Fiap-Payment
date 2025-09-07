@@ -3,7 +3,7 @@ using Fiap.Payment.Domain.PaymentAggregate.ValueObjects;
 
 namespace Fiap.Payment.Domain.PaymentAggregate
 {
-    public sealed class Payment : Entity<Guid>
+    public sealed class Payment : Entity<Guid>, SeedWork.IAggregateRoot
     {
         public int UserId { get; set; }
         public int GameId { get; set; }

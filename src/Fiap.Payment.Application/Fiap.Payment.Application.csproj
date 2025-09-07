@@ -8,11 +8,12 @@
 
   <ItemGroup>
     <Folder Include="Validators\PaymentValidators\" />
+    <Folder Include="Webhook\Models\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fiap.Payment.Common\Fiap.Payment.Common.csproj" />
     <ProjectReference Include="..\Fiap.Payment.Domain\Fiap.Payment.Domain.csproj" />
-    <ProjectReference Include="..\Fiap.Payment.Infra.CrossCutting.Http\Fiap.Payment.Infra.CrossCutting.Http.csproj" />
   </ItemGroup>
 
   <ItemGroup>

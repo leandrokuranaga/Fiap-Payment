@@ -68,15 +68,5 @@ namespace Fiap.Payment.Infra.CrossCutting.Http.Stripe
         }
 
 
-        // Aqui você adiciona a lógica para:
-        // 1. Adicionar o jogo à biblioteca do usuário
-        // 2. Atualizar o banco de dados
-        // 3. Enviar email de confirmação
-        // 4. Gerar chave do jogo, etc.
-
-        // TODO: Implementar sua lógica de negócio aqui
-
-
-
     }
 }
