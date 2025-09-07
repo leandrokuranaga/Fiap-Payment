@@ -56,7 +56,7 @@ namespace Fiap.Payment.Infra.Data
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Error trying to rollback: ", ex.Message);
+                    logger.LogError("Error trying to rollback: {Message}", ex.Message);
                 }
                 finally
                 {
