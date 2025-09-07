@@ -22,6 +22,32 @@ namespace Fiap.Payment.Infra.Data.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("Fiap.Payment.Domain.OutboxAggregate.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("OccuredOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ProcessedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutboxMessages", (string)null);
+                });
+
             modelBuilder.Entity("Fiap.Payment.Domain.PaymentAggregate.Payment", b =>
                 {
                     b.Property<Guid>("Id")
