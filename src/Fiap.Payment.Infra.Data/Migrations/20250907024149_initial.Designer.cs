@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fiap.Payment.Infra.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250907013712_add-outbox")]
-    partial class addoutbox
+    [Migration("20250907024149_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

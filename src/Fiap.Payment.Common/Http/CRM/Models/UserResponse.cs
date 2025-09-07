@@ -1,6 +1,6 @@
 ﻿namespace Fiap.Payment.Common.Http.CRM.Models
 {
-    public class UserResponse
+    public record UserResponse
     {
         public int UserId { get; set; }
         public string Name { get; set; }
@@ -14,4 +14,6 @@
         Admin = 1,
         User = 2
     }
+
+    public record ApiEnvelope<T>(T Data, bool Success, string? Message);
 }

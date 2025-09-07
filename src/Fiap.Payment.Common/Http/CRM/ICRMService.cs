@@ -5,7 +5,7 @@ namespace Fiap.Payment.Common.Http.CRM
 {
     public interface ICRMService
     {
-        [Get("/{id}")]
-        Task<UserResponse> GetUser(int id);
+        [Get("/api/v1/users/{id}")]
+        Task<ApiEnvelope<UserResponse>> GetUser(int id);
     }
 }

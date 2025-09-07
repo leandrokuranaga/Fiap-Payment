@@ -18,13 +18,14 @@ namespace Fiap.Payment.Application.Payment.Services
         ICRMService cRMService
         ) : BaseService(notification), IPaymentService
     {
-        public Task<PaymentResponse> GamePurchase(PaymentRequest request) => ExecuteAsync(async () =>
+        public async Task<PaymentResponse> GamePurchase(PaymentRequest request) 
+            //=> ExecuteAsync(async () =>
         {
             var response = new PaymentResponse();
 
             var game = await fCGService.GetGame(request.GameId);
 
-            if (game == null)
+            if (game is null)
             {
                 notification.AddNotification("GameId", "Game not found.", NotificationModel.ENotificationType.NotFound);
                 return response;
@@ -32,13 +33,13 @@ namespace Fiap.Payment.Application.Payment.Services
 
             var user = await cRMService.GetUser(request.UserId);
 
-            if (user == null)
+            if (user is null)
             {
                 notification.AddNotification("UserId", "User not Found.", NotificationModel.ENotificationType.NotFound);
                 return response;
             }
 
-            var payment = Domain.PaymentAggregate.Payment.Create(request.UserId, request.GameId, game.PriceWithDiscount);
+            var payment = Domain.PaymentAggregate.Payment.Create(request.UserId, request.GameId, game.Data.PriceWithDiscount);
 
             await repository.InsertOrUpdateAsync(payment);
             await repository.SaveChangesAsync();
@@ -46,10 +47,15 @@ namespace Fiap.Payment.Application.Payment.Services
             var paymentRequest = (PurchaseGameRequest)request;
 
             paymentRequest.Id = payment.Id;
+            paymentRequest.GameName = game.Data.Name;
+            paymentRequest.UserEmail = user.Data.Email;
+            paymentRequest.Price = game.Data.PriceWithDiscount;
+
 
             var result = await stripeService.PurchaseGame(paymentRequest);
 
             return (PaymentResponse)result;
-        });
+        }
+        //);
     }
 }

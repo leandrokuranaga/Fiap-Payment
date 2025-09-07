@@ -6,7 +6,6 @@ namespace Fiap.Payment.Application.Payment.Models.Response
     {
         public string Message { get; set; }
         public string PaymentUrl { get; set; }
-        public bool Success { get; set; }
 
         public static explicit operator PaymentResponse(PaymentResult payment)
         {

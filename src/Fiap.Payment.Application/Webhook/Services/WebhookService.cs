@@ -60,7 +60,7 @@ namespace Fiap.Payment.Application.Webhook.Services
                         };
 
                         var eventJson = JsonSerializer.Serialize(addGameEvent);
-                        var outbox = new OutboxMessage(typeof(AddGameToUserLibraryEvent).FullName ?? "AddGameToUserLibraryEvent", eventJson, DateTime.UtcNow);
+                        var outbox = new OutboxMessage(typeof(AddGameToUserLibraryEvent).FullName, eventJson, DateTime.UtcNow);
                             
                         await outboxRepository.InsertOrUpdateAsync(outbox);
                         await outboxRepository.SaveChangesAsync();

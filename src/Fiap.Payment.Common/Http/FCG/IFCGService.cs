@@ -5,7 +5,7 @@ namespace Fiap.Payment.Common.Http.FCG
 {
     public interface IFCGService
     {
-        [Get("/{id}")]
-        Task<GameResponse> GetGame(int id);
+        [Get("/api/v1/games/{id}")]
+        Task<ApiEnvelope<GameResponse>> GetGame(int id);
     }
 }
