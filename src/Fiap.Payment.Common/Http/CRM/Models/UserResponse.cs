@@ -7,6 +7,7 @@
         public string Email { get; set; }
         public TypeUser Type { get; set; }
         public bool Active { get; set; }
+        public List<int> GameIds { get; set; } = [];
     }
 
     public enum TypeUser

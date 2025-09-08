@@ -66,7 +66,7 @@ namespace Fiap.Payment.Unit.Tests._3._Domain_Layer_Tests.ValueObjects
             Assert.True(Money.IsValidCurrency("USD"));
             Assert.True(Money.IsValidCurrency("EUR"));
             Assert.True(Money.IsValidCurrency("BRL"));
-            Assert.True(Money.IsValidCurrency("usd")); // Should handle case insensitive
+            Assert.True(Money.IsValidCurrency("usd"));
         }
 
         [Fact]

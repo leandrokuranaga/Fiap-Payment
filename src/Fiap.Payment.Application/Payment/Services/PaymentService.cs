@@ -18,8 +18,8 @@ namespace Fiap.Payment.Application.Payment.Services
         ICRMService cRMService
         ) : BaseService(notification), IPaymentService
     {
-        public async Task<PaymentResponse> GamePurchase(PaymentRequest request) 
-            //=> ExecuteAsync(async () =>
+        public Task<PaymentResponse> GamePurchase(PaymentRequest request)
+            => ExecuteAsync(async () =>
         {
             var response = new PaymentResponse();
 
@@ -28,6 +28,12 @@ namespace Fiap.Payment.Application.Payment.Services
             if (user is null)
             {
                 notification.AddNotification("UserId", "User not Found.", NotificationModel.ENotificationType.NotFound);
+                return response;
+            }
+
+            if (user?.Data?.GameIds?.Contains(request.GameId) is true)
+            {
+                notification.AddNotification("GameId", "User already has the game.", NotificationModel.ENotificationType.BusinessRules);
                 return response;
             }
 
@@ -55,6 +61,6 @@ namespace Fiap.Payment.Application.Payment.Services
 
             return (PaymentResponse)result;
         }
-        //);
+        );
     }
 }

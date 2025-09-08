@@ -18,7 +18,8 @@ namespace Fiap.Payment.Application.Webhook.Services
         IOutboxRepository outboxRepository,
         IPaymentRepository paymentRepository,
         IConfiguration configuration,
-        ILogger<WebhookService> logger
+        ILogger<WebhookService> logger,
+        IWebhookValidator webhookValidator
         ) : BaseService(notification), IWebhookService
     {
         public Task<WebhookResponse> HandleStripeWebhookAsync(WebhookRequest request, CancellationToken ct = default) => ExecuteAsync(async () =>
@@ -35,7 +36,7 @@ namespace Fiap.Payment.Application.Webhook.Services
 
             Event stripeEvent;
 
-            stripeEvent = EventUtility.ConstructEvent(request.Json, request.Signature, webhookSecret);
+            stripeEvent = webhookValidator.ConstructEvent(request.Json, request.Signature, webhookSecret);
 
             if (stripeEvent.Type == "payment_intent.succeeded")
             {

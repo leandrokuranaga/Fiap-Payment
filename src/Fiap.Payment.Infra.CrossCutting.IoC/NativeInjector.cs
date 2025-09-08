@@ -82,6 +82,7 @@ public static class NativeInjector
         #region Services
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IWebhookService, WebhookService>();
+        services.AddScoped<IWebhookValidator, StripeWebhookValidator>();
         #endregion
     }
     public static IServiceCollection AddObservability(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
@@ -104,7 +105,7 @@ public static class NativeInjector
                 secretAccessKey: configuration["ServiceBus:SecretKey"],
                 regionEndpoint: Amazon.RegionEndpoint.GetBySystemName(configuration["ServiceBus:Region"])))
             .Routing(r => r.TypeBased()
-                .MapFallback(configuration["ServiceBus:QueueName"])));
+                .MapFallback(configuration["ServiceBus:CRMQueueName"])));
 
         return services;
     }
