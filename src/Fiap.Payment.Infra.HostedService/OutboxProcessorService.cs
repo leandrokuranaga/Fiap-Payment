@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Fiap.Contracts.Events;
 using Fiap.Payment.Domain.OutboxAggregate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,7 @@ namespace Fiap.Payment.Infra.HostedService;
 public class OutboxProcessorService(
         ILogger<OutboxProcessorService> logger,
         IServiceProvider serviceProvider,
-        //IBus bus,
+        IBus bus,
         IConfiguration configuration
         ) : BackgroundService
 {
@@ -53,13 +54,14 @@ public class OutboxProcessorService(
             }
 
             var eventMessage = JsonSerializer.Deserialize(msg.Content, eventType);
+
             if (eventMessage == null)
             {
                 logger.LogWarning("Failed to deserialize content for outbox message {OutboxId}.", msg.Id);
                 continue;
             }
 
-            //await bus.Advanced.Routing.Send(configuration["ServiceBus:QueueName"], eventMessage);
+            await bus.Advanced.Routing.Send(configuration["ServiceBus:CRMQueueName"], eventMessage);
             msg.ProcessedOn = DateTime.UtcNow;
         }
 

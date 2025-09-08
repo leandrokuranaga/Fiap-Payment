@@ -23,19 +23,19 @@ namespace Fiap.Payment.Application.Payment.Services
         {
             var response = new PaymentResponse();
 
-            var game = await fCGService.GetGame(request.GameId);
-
-            if (game is null)
-            {
-                notification.AddNotification("GameId", "Game not found.", NotificationModel.ENotificationType.NotFound);
-                return response;
-            }
-
             var user = await cRMService.GetUser(request.UserId);
 
             if (user is null)
             {
                 notification.AddNotification("UserId", "User not Found.", NotificationModel.ENotificationType.NotFound);
+                return response;
+            }
+
+            var game = await fCGService.GetGame(request.GameId);
+
+            if (game is null)
+            {
+                notification.AddNotification("GameId", "Game not found.", NotificationModel.ENotificationType.NotFound);
                 return response;
             }
 
@@ -50,7 +50,6 @@ namespace Fiap.Payment.Application.Payment.Services
             paymentRequest.GameName = game.Data.Name;
             paymentRequest.UserEmail = user.Data.Email;
             paymentRequest.Price = game.Data.PriceWithDiscount;
-
 
             var result = await stripeService.PurchaseGame(paymentRequest);
 

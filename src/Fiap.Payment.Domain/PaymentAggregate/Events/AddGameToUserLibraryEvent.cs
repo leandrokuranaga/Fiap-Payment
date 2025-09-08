@@ -2,7 +2,7 @@
 
 namespace Fiap.Payment.Domain.PaymentAggregate.Events
 {
-    public class AddGameToUserLibraryEvent
+    public record AddGameToUserLibraryEvent
     {
         public int GameId { get; set; }
         public int UserId { get; set; }

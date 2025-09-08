@@ -35,6 +35,7 @@ public static class NativeInjector
         AddLocalServices(services, configuration);
         AddObservability(services, configuration, services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>());
         AddDatabase(services, configuration);
+        AddServiceBus(services, configuration);
     }
 
     public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)

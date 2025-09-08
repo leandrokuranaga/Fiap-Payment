@@ -13,4 +13,8 @@
     <PackageReference Include="Stripe.net" Version="48.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BusHandlers\" />
+  </ItemGroup>
+
 </Project>

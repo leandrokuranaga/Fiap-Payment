@@ -12,6 +12,7 @@
     <Project Path="src/Fiap.Payment.Domain/Fiap.Payment.Domain.csproj" />
   </Folder>
   <Folder Name="/Crosscutting/">
+    <Project Path="src/Fiap.Contracts.Events/Fiap.Contracts.Events.csproj" Id="7317c3d6-52d0-4053-9e2b-3416a6c4485f" />
     <Project Path="src/Fiap.Payment.Common/Fiap.Payment.Common.csproj" Id="493efcdf-7f49-490c-ac31-2ffd4cc8a16e" />
     <Project Path="src/Fiap.Payment.Infra.CrossCutting.IoC/Fiap.Payment.Infra.CrossCutting.IoC.csproj" />
   </Folder>

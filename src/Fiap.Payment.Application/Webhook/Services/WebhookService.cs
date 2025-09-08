@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Fiap.Contracts.Events;
 using Fiap.Payment.Application.Common;
 using Fiap.Payment.Application.Webhook.Models.Request;
 using Fiap.Payment.Application.Webhook.Models.Response;
@@ -59,8 +60,16 @@ namespace Fiap.Payment.Application.Webhook.Services
                             PricePaid = payment.Price
                         };
 
-                        var eventJson = JsonSerializer.Serialize(addGameEvent);
-                        var outbox = new OutboxMessage(typeof(AddGameToUserLibraryEvent).FullName, eventJson, DateTime.UtcNow);
+                        var contract = new AddGameToUserLibraryIntegrationEvent(
+                            addGameEvent.GameId,
+                            addGameEvent.UserId,
+                            addGameEvent.PurchaseDate,
+                            addGameEvent.PricePaid.Value,
+                            addGameEvent.PricePaid.Currency
+                        );
+
+                        var eventJson = JsonSerializer.Serialize(contract);
+                        var outbox = new OutboxMessage(typeof(AddGameToUserLibraryIntegrationEvent).AssemblyQualifiedName!, eventJson, DateTime.UtcNow);
                             
                         await outboxRepository.InsertOrUpdateAsync(outbox);
                         await outboxRepository.SaveChangesAsync();

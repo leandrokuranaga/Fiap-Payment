@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fiap.Contracts.Events\Fiap.Contracts.Events.csproj" />
     <ProjectReference Include="..\Fiap.Payment.Common\Fiap.Payment.Common.csproj" />
     <ProjectReference Include="..\Fiap.Payment.Domain\Fiap.Payment.Domain.csproj" />
   </ItemGroup>
