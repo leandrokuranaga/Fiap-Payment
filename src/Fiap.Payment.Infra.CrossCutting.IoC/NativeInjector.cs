@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Fiap.Contracts.Events;
 using Fiap.Payment.Application.Payment.Services;
 using Fiap.Payment.Application.Validators.WebhookValidators;
 using Fiap.Payment.Application.Webhook.Services;
@@ -20,10 +20,12 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Rebus.Config;
+using Rebus.Retry.Simple;
 using Rebus.Routing.TypeBased;
 using Refit;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fiap.Payment.Infra.CrossCutting.IoC;
 
@@ -101,13 +103,19 @@ public static class NativeInjector
             .ValidateOnStart();
 
         services.AddRebus(configure => configure
-            .Transport(t => t.UseAmazonSQSAsOneWayClient(
+            .Transport(t => t.UseAmazonSQS(
                 accessKeyId: configuration["ServiceBus:AccessKey"],
                 secretAccessKey: configuration["ServiceBus:SecretKey"],
-                regionEndpoint: Amazon.RegionEndpoint.GetBySystemName(configuration["ServiceBus:Region"])))
+                regionEndpoint: Amazon.RegionEndpoint.GetBySystemName(configuration["ServiceBus:Region"]),
+                inputQueueAddress: configuration["ServiceBus:PaymentQueueName"]))
             .Routing(r => r.TypeBased()
-                .MapFallback(configuration["ServiceBus:CRMQueueName"])));
-
+                .Map<AddGameToUserLibraryIntegrationEvent>(configuration["ServiceBus:CRMQueueName"]))
+                .Options(o =>
+                {
+                    o.RetryStrategy(maxDeliveryAttempts: 3);
+                    o.SetNumberOfWorkers(1);
+                    o.SetMaxParallelism(1);
+                }));
         return services;
     }
 
