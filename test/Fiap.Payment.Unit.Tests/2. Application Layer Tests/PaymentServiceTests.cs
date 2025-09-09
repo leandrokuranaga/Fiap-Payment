@@ -28,7 +28,7 @@ namespace Fiap.Payment.Unit.Tests._2._Application_Layer_Tests
             _paymentService = new PaymentService(
                 _mockNotification,
                 _mockPaymentRepository,
-                null!, // Simplified for testing
+                null!,
                 _mockFCGService,
                 _mockCRMService
             );
