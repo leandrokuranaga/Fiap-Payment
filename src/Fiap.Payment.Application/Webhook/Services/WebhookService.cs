@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Fiap.Contracts.Events;
 using Fiap.Payment.Application.Common;
+using Fiap.Payment.Application.Validators.WebhookValidators;
 using Fiap.Payment.Application.Webhook.Models.Request;
 using Fiap.Payment.Application.Webhook.Models.Response;
 using Fiap.Payment.Domain.OutboxAggregate;

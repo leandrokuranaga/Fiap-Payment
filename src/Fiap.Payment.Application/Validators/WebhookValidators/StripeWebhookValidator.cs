@@ -1,6 +1,6 @@
 using Stripe;
 
-namespace Fiap.Payment.Application.Webhook.Services
+namespace Fiap.Payment.Application.Validators.WebhookValidators
 {
     public class StripeWebhookValidator : IWebhookValidator
     {

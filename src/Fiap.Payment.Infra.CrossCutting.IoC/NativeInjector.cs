@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Fiap.Payment.Application.Payment.Services;
+using Fiap.Payment.Application.Validators.WebhookValidators;
 using Fiap.Payment.Application.Webhook.Services;
 using Fiap.Payment.Common.Http.CRM;
 using Fiap.Payment.Common.Http.FCG;

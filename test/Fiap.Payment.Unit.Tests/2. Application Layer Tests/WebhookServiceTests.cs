@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Linq.Expressions;
 using Stripe;
+using Fiap.Payment.Application.Validators.WebhookValidators;
 
 namespace Fiap.Payment.Unit.Tests._2._Application_Layer_Tests
 {
