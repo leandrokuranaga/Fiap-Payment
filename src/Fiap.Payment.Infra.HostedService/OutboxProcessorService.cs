@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Fiap.Contracts.Events;
 using Fiap.Payment.Domain.OutboxAggregate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

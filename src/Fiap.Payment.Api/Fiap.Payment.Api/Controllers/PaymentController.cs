@@ -1,5 +1,4 @@
 ﻿using Fiap.Payment.Api.SwaggerExamples.Common;
-using Fiap.Payment.Api.SwaggerExamples.Payment;
 using Fiap.Payment.Application.Common;
 using Fiap.Payment.Application.Payment.Models.Request;
 using Fiap.Payment.Application.Payment.Models.Response;

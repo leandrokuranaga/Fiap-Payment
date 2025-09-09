@@ -1,9 +1,7 @@
 using Fiap.Payment.Application.Webhook.Models.Request;
-using Fiap.Payment.Application.Webhook.Models.Response;
 using Fiap.Payment.Application.Webhook.Services;
 using Fiap.Payment.Domain.OutboxAggregate;
 using Fiap.Payment.Domain.PaymentAggregate;
-using Fiap.Payment.Domain.PaymentAggregate.ValueObjects;
 using Fiap.Payment.Domain.SeedWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
