@@ -2,6 +2,6 @@
 {
     public class ConnectionStrings
     {
-        public string DefaultConnection { get; set; }
+        public string PaymentConnection { get; set; }
     }
 }

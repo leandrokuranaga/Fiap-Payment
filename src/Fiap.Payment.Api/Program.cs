@@ -49,7 +49,7 @@ builder.Services.AddOptions<StripeOptions>()
     .Validate(o => !string.IsNullOrWhiteSpace(o.WebhookSecret), "Stripe:WebhookSecret missing")
     .ValidateOnStart();
 
-var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<ConnectionStrings>()?.DefaultConnection;
+var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<ConnectionStrings>()?.PaymentConnection;
 builder.Services.AddHealthChecks().AddMySql(conn!, "mysql").AddApplicationStatus();
 
 builder.Services.AddGlobalCorsPolicy();
