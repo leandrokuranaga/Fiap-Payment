@@ -125,7 +125,7 @@ namespace Fiap.Payment.Unit.Tests._2._Application_Layer_Tests
 
             _mockWebhookValidator.Received(1).ConstructEvent(validWebhookJson, "t=1234567890,v1=validSignature", "test_webhook_secret");
             await _mockPaymentRepository.Received(1).GetAsync(Arg.Any<Expression<Func<Domain.PaymentAggregate.Payment, bool>>>());
-            await _mockOutboxRepository.Received(1).InsertOrUpdateAsync(Arg.Any<OutboxMessage>());
+            await _mockOutboxRepository.Received(2).InsertOrUpdateAsync(Arg.Any<OutboxMessage>());
             await _mockOutboxRepository.Received(1).SaveChangesAsync();
         }
 
