@@ -3,6 +3,7 @@ using Fiap.Payment.Application.Payment.Models.Response;
 using Fiap.Payment.Application.Payment.Services;
 using Fiap.Payment.Common.Http.CRM;
 using Fiap.Payment.Common.Http.FCG;
+using Fiap.Payment.Domain.OutboxAggregate;
 using Fiap.Payment.Domain.PaymentAggregate;
 using Fiap.Payment.Domain.SeedWork;
 using Fiap.Payment.Infra.CrossCutting.Http.Stripe;
@@ -17,6 +18,8 @@ namespace Fiap.Payment.Unit.Tests._2._Application_Layer_Tests
         private readonly IStripeService _mockStripeService;
         private readonly IFCGService _mockFCGService;
         private readonly ICRMService _mockCRMService;
+        private readonly IUnitOfWork _mockUoW;
+        private readonly IOutboxRepository _mockOutboxRepository;
         private readonly PaymentService _paymentService;
 
         public PaymentServiceTests()
@@ -26,13 +29,17 @@ namespace Fiap.Payment.Unit.Tests._2._Application_Layer_Tests
             _mockStripeService = Substitute.For<IStripeService>();
             _mockFCGService = Substitute.For<IFCGService>();
             _mockCRMService = Substitute.For<ICRMService>();
+            _mockUoW = Substitute.For<IUnitOfWork>();
+            _mockOutboxRepository = Substitute.For<IOutboxRepository>();
 
             _paymentService = new PaymentService(
                 _mockNotification,
                 _mockPaymentRepository,
-                null!,
+                _mockStripeService,
                 _mockFCGService,
-                _mockCRMService
+                _mockCRMService,
+                _mockUoW,
+                _mockOutboxRepository
             );
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Fiap.Payment.Domain.Events
+﻿namespace Fiap.Payment.Domain.SeedWork
 {
 	public record EventStored : IEventSourcing
 	{

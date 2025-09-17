@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fiap.Payment.Application\Fiap.Payment.Application.csproj" />
+    <ProjectReference Include="..\Fiap.Payment.Infra.Bus\Fiap.Payment.Infra.Bus.csproj" />
     <ProjectReference Include="..\Fiap.Payment.Infra.Data\Fiap.Payment.Infra.Data.csproj" />
     <ProjectReference Include="..\Fiap.Payment.Infra.HostedService\Fiap.Payment.Infra.HostedService.csproj" />
   </ItemGroup>

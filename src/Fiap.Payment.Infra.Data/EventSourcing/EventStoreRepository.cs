@@ -1,5 +1,5 @@
 ﻿using EventStore.Client;
-using Fiap.Payment.Domain.Events;
+using Fiap.Payment.Domain.SeedWork;
 using Microsoft.Extensions.Logging;
 
 namespace Fiap.Payment.Infra.Data.EventSourcing
