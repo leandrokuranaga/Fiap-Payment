@@ -49,7 +49,7 @@ namespace Fiap.Payment.Infra.Data.EventSourcing
 				}
 				catch (Exception ex)
 				{
-					logger.LogError(ex, "Erro ao desserializar evento do stream {StreamName}", streamName);
+					logger.LogError(ex, "Error deserializing event from stream {StreamName}", streamName);
 					continue;
 				}
 			}
