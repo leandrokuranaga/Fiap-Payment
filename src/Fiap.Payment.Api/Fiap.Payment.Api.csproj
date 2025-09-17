@@ -30,9 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Fiap.Payment.Application\Fiap.Payment.Application.csproj" />
-    <ProjectReference Include="..\..\Fiap.Payment.Domain\Fiap.Payment.Domain.csproj" />
-    <ProjectReference Include="..\..\Fiap.Payment.Infra.CrossCutting.IoC\Fiap.Payment.Infra.CrossCutting.IoC.csproj" />
+    <ProjectReference Include="..\Fiap.Payment.Application\Fiap.Payment.Application.csproj" />
+    <ProjectReference Include="..\Fiap.Payment.Domain\Fiap.Payment.Domain.csproj" />
+    <ProjectReference Include="..\Fiap.Payment.Infra.CrossCutting.IoC\Fiap.Payment.Infra.CrossCutting.IoC.csproj" />
   </ItemGroup>
 
 </Project>
