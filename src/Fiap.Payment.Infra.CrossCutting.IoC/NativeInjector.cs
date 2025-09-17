@@ -104,7 +104,7 @@ public static class NativeInjector
 
         #region Bus Services
         services.AutoRegisterHandlersFromAssemblyOf<PaymentCreatedHandler>();
-        services.AutoRegisterHandlersFromAssemblyOf<PaymentSuccesfulHandler>();
+        services.AutoRegisterHandlersFromAssemblyOf<PaymentSuccessfulHandler>();
         services.AutoRegisterHandlersFromAssemblyOf<PaymentFailedHandler>();
         #endregion
     }
