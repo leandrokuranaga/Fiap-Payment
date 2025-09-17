@@ -52,7 +52,7 @@ public static class NativeInjector
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("PaymentConnection");
         
         services.AddDbContext<Context>(options =>
             options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
