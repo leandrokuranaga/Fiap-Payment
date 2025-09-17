@@ -6,7 +6,7 @@ using Rebus.Handlers;
 using System.Text.Json;
 
 namespace Fiap.Payment.Infra.Bus.Handlers;
-public class PaymentSuccesfulHandler(IEventStoreRepository eventStoreRepository) : IHandleMessages<PaymentSuccessfulIntegrationEvent>
+public class PaymentSuccessfulHandler(IEventStoreRepository eventStoreRepository) : IHandleMessages<PaymentSuccessfulIntegrationEvent>
 {
     public async Task Handle(PaymentSuccessfulIntegrationEvent message)
     {
