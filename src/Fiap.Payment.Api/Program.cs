@@ -58,13 +58,17 @@ builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseSwaggerDocumentation();
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
-app.UseRouting();
+app.UseSwaggerDocumentation();
 app.UseHttpsRedirection();
-app.MapHealthChecks("/health");
+app.UseRouting();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.MapHealthChecks("/health");
 app.MapControllers();
 app.Run();
 

@@ -56,6 +56,12 @@ namespace Fiap.Payment.Api.Middlewares
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception, string title, NotificationModel.ENotificationType type, HttpStatusCode statusCode)
         {
+            if (context.Response.HasStarted)
+            {
+                Log.Warning("Response has already started, cannot handle exception properly");
+                return;
+            }
+
             var correlationId = Guid.NewGuid().ToString();
             var userAgent = context.Request.Headers.UserAgent.ToString();
 
@@ -67,6 +73,7 @@ namespace Fiap.Payment.Api.Middlewares
                 context.Request.QueryString.Value,
                 userAgent);
 
+            context.Response.Clear();
             context.Response.StatusCode = (int)statusCode;
             context.Response.ContentType = "application/json";
 
