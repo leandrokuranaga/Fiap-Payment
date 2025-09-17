@@ -39,7 +39,7 @@ namespace Fiap.Payment.Infra.Data.EventSourcing
 					var eventTypeName = resolvedEvent.Event.EventType;
 					if (!_eventTypes.TryGetValue(eventTypeName, out var eventType))
 					{
-						logger.LogWarning("Tipo de evento '{EventTypeName}' não encontrado nos assemblies carregados.", eventTypeName);
+						logger.LogWarning("Event type '{EventTypeName}' not found in loaded assemblies.", eventTypeName);
 						continue;
 					}
 
