@@ -1,7 +1,7 @@
 <Solution>
   <Folder Name="/Adapters/" />
   <Folder Name="/Adapters/Inbound/">
-    <Project Path="src/Fiap.Payment.Api/Fiap.Payment.Api/Fiap.Payment.Api.csproj" />
+    <Project Path="src/Fiap.Payment.Api/Fiap.Payment.Api.csproj" />
   </Folder>
   <Folder Name="/Adapters/Outbound/">
     <Project Path="src/Fiap.Payment.Infra.Bus/Fiap.Payment.Infra.Bus.csproj" Id="cbae2374-6145-43a0-94e3-1232abb6815f" />
