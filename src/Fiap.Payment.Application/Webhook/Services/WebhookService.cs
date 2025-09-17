@@ -39,11 +39,11 @@ namespace Fiap.Payment.Application.Webhook.Services
 
             stripeEvent = webhookValidator.ConstructEvent(request.Json, request.Signature, webhookSecret);
 
-            if (stripeEvent.Type == "payment_intent.succeeded")
+            if (stripeEvent.Type is "payment_intent.succeeded")
             {
                 var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
                     
-                if (paymentIntent?.Metadata != null &&
+                if (paymentIntent?.Metadata is not null &&
                     paymentIntent.Metadata.TryGetValue("userId", out var userIdStr) &&
                     paymentIntent.Metadata.TryGetValue("gameId", out var gameIdStr) &&
                     int.TryParse(userIdStr, out var userId) &&
@@ -52,7 +52,7 @@ namespace Fiap.Payment.Application.Webhook.Services
                     var payments = await paymentRepository.GetAsync(p => p.UserId == userId && p.GameId == gameId);
                     var payment = payments?.FirstOrDefault();
                         
-                    if (payment != null)
+                    if (payment is not null)
                     {
                         var addGameEvent = new AddGameToUserLibraryEvent
                         {
@@ -62,7 +62,7 @@ namespace Fiap.Payment.Application.Webhook.Services
                             PricePaid = payment.Price
                         };
 
-                        var contract = new AddGameToUserLibraryIntegrationEvent(
+                        var addGameContract = new AddGameToUserLibraryIntegrationEvent(
                             addGameEvent.GameId,
                             addGameEvent.UserId,
                             addGameEvent.PurchaseDate,
@@ -70,10 +70,21 @@ namespace Fiap.Payment.Application.Webhook.Services
                             addGameEvent.PricePaid.Currency
                         );
 
-                        var eventJson = JsonSerializer.Serialize(contract);
-                        var outbox = new OutboxMessage(typeof(AddGameToUserLibraryIntegrationEvent).AssemblyQualifiedName!, eventJson, DateTime.UtcNow);
+                        var paymentSuccessfulContract = new PaymentSuccessfulIntegrationEvent(
+                            payment.Id,
+                            payment.UserId,
+                            payment.GameId,
+                            payment.Price.Value
+                        );
+
+                        var addGameEventJson = JsonSerializer.Serialize(addGameContract);
+                        var addGameOutbox = new OutboxMessage(typeof(AddGameToUserLibraryIntegrationEvent).AssemblyQualifiedName!, addGameEventJson, DateTime.UtcNow);
+
+                        var paymentSuccessfulEventJson = JsonSerializer.Serialize(paymentSuccessfulContract);
+                        var paymentSuccessfulOutbox = new OutboxMessage(typeof(PaymentSuccessfulIntegrationEvent).AssemblyQualifiedName!, paymentSuccessfulEventJson, DateTime.UtcNow);
                             
-                        await outboxRepository.InsertOrUpdateAsync(outbox);
+                        await outboxRepository.InsertOrUpdateAsync(addGameOutbox);
+                        await outboxRepository.InsertOrUpdateAsync(paymentSuccessfulOutbox);
                         await outboxRepository.SaveChangesAsync();
 
                         logger.LogInformation("Payment successful for UserId: {UserId}, GameId: {GameId}", userId, gameId);
@@ -93,6 +104,51 @@ namespace Fiap.Payment.Application.Webhook.Services
                     notification.AddNotification("Metadata", "Missing or invalid payment metadata.", NotificationModel.ENotificationType.BadRequestError);
                 }
             }
+            else if (stripeEvent.Type is "payment_intent.payment_failed")
+            {
+                var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+                    
+                if (paymentIntent?.Metadata is not null &&
+                    paymentIntent.Metadata.TryGetValue("userId", out var userIdStr) &&
+                    paymentIntent.Metadata.TryGetValue("gameId", out var gameIdStr) &&
+                    int.TryParse(userIdStr, out var userId) &&
+                    int.TryParse(gameIdStr, out var gameId))
+                {
+                    var payments = await paymentRepository.GetAsync(p => p.UserId == userId && p.GameId == gameId);
+                    var payment = payments?.FirstOrDefault();
+                        
+                    if (payment is not null)
+                    {
+                        var paymentFailedContract = new PaymentFailedIntegrationEvent(
+                            payment.Id,
+                            payment.UserId,
+                            payment.GameId,
+                            payment.Price.Value
+                        );
+
+                        var paymentFailedEventJson = JsonSerializer.Serialize(paymentFailedContract);
+                        var paymentFailedOutbox = new OutboxMessage(typeof(PaymentFailedIntegrationEvent).AssemblyQualifiedName!, paymentFailedEventJson, DateTime.UtcNow);
+                            
+                        await outboxRepository.InsertOrUpdateAsync(paymentFailedOutbox);
+                        await outboxRepository.SaveChangesAsync();
+
+                        logger.LogWarning("Payment failed for UserId: {UserId}, GameId: {GameId}", userId, gameId);
+                            
+                        response.Success = true;
+                        response.Message = "Payment failed webhook processed successfully";
+                    }
+                    else
+                    {
+                        logger.LogWarning("Payment not found for failed payment - UserId: {UserId}, GameId: {GameId}", userId, gameId);
+                        notification.AddNotification("Payment", "Payment not found for failed payment.", NotificationModel.ENotificationType.NotFound);
+                    }
+                }
+                else
+                {
+                    logger.LogWarning("Missing or invalid metadata in failed payment intent");
+                    notification.AddNotification("Metadata", "Missing or invalid payment metadata for failed payment.", NotificationModel.ENotificationType.BadRequestError);
+                }
+            }
             else
             {
                 logger.LogInformation("Unhandled webhook event type: {EventType}", stripeEvent.Type);
@@ -101,5 +157,8 @@ namespace Fiap.Payment.Application.Webhook.Services
             }         
             return response;
         });
+
+        private OutboxMessage CreateOutboxMessage<T>(T content) where T : class =>
+            new(typeof(T).AssemblyQualifiedName!, JsonSerializer.Serialize(content), DateTime.UtcNow);
     }
 }

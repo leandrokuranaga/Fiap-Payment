@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Fiap.Payment.Application.Validators;
 using Fiap.Payment.Domain.SeedWork;
 using FluentValidation;

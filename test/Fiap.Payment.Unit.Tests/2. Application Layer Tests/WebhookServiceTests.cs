@@ -1,9 +1,7 @@
 using Fiap.Payment.Application.Webhook.Models.Request;
-using Fiap.Payment.Application.Webhook.Models.Response;
 using Fiap.Payment.Application.Webhook.Services;
 using Fiap.Payment.Domain.OutboxAggregate;
 using Fiap.Payment.Domain.PaymentAggregate;
-using Fiap.Payment.Domain.PaymentAggregate.ValueObjects;
 using Fiap.Payment.Domain.SeedWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -127,7 +125,7 @@ namespace Fiap.Payment.Unit.Tests._2._Application_Layer_Tests
 
             _mockWebhookValidator.Received(1).ConstructEvent(validWebhookJson, "t=1234567890,v1=validSignature", "test_webhook_secret");
             await _mockPaymentRepository.Received(1).GetAsync(Arg.Any<Expression<Func<Domain.PaymentAggregate.Payment, bool>>>());
-            await _mockOutboxRepository.Received(1).InsertOrUpdateAsync(Arg.Any<OutboxMessage>());
+            await _mockOutboxRepository.Received(2).InsertOrUpdateAsync(Arg.Any<OutboxMessage>());
             await _mockOutboxRepository.Received(1).SaveChangesAsync();
         }
 

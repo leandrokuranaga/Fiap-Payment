@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fiap.Payment.Domain\Fiap.Payment.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
