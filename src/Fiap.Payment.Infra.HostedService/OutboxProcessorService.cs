@@ -1,11 +1,11 @@
-﻿using System.Text.Json;
-using Fiap.Contracts.Events;
+﻿using Fiap.Contracts.Events;
 using Fiap.Payment.Domain.OutboxAggregate;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rebus.Bus;
+using System.Text.Json;
 
 namespace Fiap.Payment.Infra.HostedService;
 public class OutboxProcessorService(
@@ -47,7 +47,7 @@ public class OutboxProcessorService(
                     .SelectMany(a => a.GetTypes())
                     .FirstOrDefault(t => t.Name == msg.Type);
 
-            if (eventType == null)
+            if (eventType is null)
             {
                 logger.LogWarning("Event type {EventType} not found for outbox message {OutboxId}.", msg.Type, msg.Id);
                 continue;
@@ -55,13 +55,20 @@ public class OutboxProcessorService(
 
             var eventMessage = JsonSerializer.Deserialize(msg.Content, eventType);
 
-            if (eventMessage == null)
+            if (eventMessage is null)
             {
                 logger.LogWarning("Failed to deserialize content for outbox message {OutboxId}.", msg.Id);
                 continue;
             }
+            if (eventType == typeof(AddGameToUserLibraryIntegrationEvent))
+            {
+                await bus.Advanced.Routing.Send(configuration["ServiceBus:CRMQueueName"], eventMessage);
+            } 
+            else
+            {
+                await bus.Advanced.Routing.Send(configuration["ServiceBus:PaymentQueueName"], eventMessage);
+            }
 
-            await bus.Advanced.Routing.Send(configuration["ServiceBus:CRMQueueName"], eventMessage);
             msg.ProcessedOn = DateTime.UtcNow;
         }
 
