@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Fiap.Payment.Api\Fiap.Payment.Api\Fiap.Payment.Api.csproj" />
+    <ProjectReference Include="..\..\src\Fiap.Payment.Api\Fiap.Payment.Api.csproj" />
     <ProjectReference Include="..\..\src\Fiap.Payment.Application\Fiap.Payment.Application.csproj" />
     <ProjectReference Include="..\..\src\Fiap.Payment.Domain\Fiap.Payment.Domain.csproj" />
   </ItemGroup>
