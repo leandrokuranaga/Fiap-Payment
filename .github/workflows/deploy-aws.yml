@@ -7,7 +7,7 @@ on:
       - completed
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/fiap-payment
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/fcg
 
 jobs:
   deploy:
@@ -15,13 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug workflow_run event
-        run: |
-          echo "Workflow run ID: ${{ github.event.workflow_run.id }}"
-          echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
-          echo "Workflow run status: ${{ github.event.workflow_run.status }}"
-          echo "Workflow name: ${{ github.event.workflow_run.workflow.name }}"
-          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
       - name: Checkout do código
         uses: actions/checkout@v4
 
