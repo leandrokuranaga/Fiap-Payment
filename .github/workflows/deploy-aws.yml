@@ -3,7 +3,6 @@ name: Deploy to AWS ECS
 on:
   workflow_run:
     workflows: ["Publicar Imagem Docker no Docker Hub"]
-    branches: [dev]
     types:
       - completed
 
