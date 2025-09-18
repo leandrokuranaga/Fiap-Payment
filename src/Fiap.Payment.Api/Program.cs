@@ -55,7 +55,9 @@ builder.Services.AddHealthChecks().AddMySql(conn!, "mysql").AddApplicationStatus
 builder.Services.AddGlobalCorsPolicy();
 builder.Services.AddApiVersioningConfiguration();
 builder.Services.AddSwaggerDocumentation();
-
+builder.WebHost.UseUrls("http://0.0.0.0:80");
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+builder.WebHost.UseUrls("http://0.0.0.0:8081");
 var app = builder.Build();
 
 app.UseCors("AllowAllOrigins");
