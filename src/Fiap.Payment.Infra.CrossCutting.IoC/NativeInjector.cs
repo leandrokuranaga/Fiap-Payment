@@ -58,7 +58,7 @@ public static class NativeInjector
 
         services.AddSingleton(sp =>
         {
-            var conn = configuration.GetConnectionString("EventStore");
+            var conn = configuration["ConnectionStrings:EventStoreConnection"];
             if (string.IsNullOrWhiteSpace(conn))
                 throw new InvalidOperationException("EventStore connection string is not configured.");
             var settings = EventStoreClientSettings.Create(conn);
