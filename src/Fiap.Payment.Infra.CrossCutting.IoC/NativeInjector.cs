@@ -44,7 +44,6 @@ public static class NativeInjector
         AddDatabase(services, configuration);
         AddServiceBus(services, configuration);
     }
-
     public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<ConnectionStrings>()
@@ -66,7 +65,6 @@ public static class NativeInjector
             return new EventStoreClient(settings);
         });
     }
-
     public static void AddLocalHttpClients(this IServiceCollection services, IConfiguration configuration) 
     {
         var urlFCG = configuration["ExternalServices:FCGUrl"];
@@ -82,7 +80,6 @@ public static class NativeInjector
 
         services.AddScoped<IStripeService, StripeService>();
     }
-
     public static void AddLocalServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -114,7 +111,6 @@ public static class NativeInjector
         ConfigureOpenTelemetry(services, configuration);
         return services;
     }
-
     public static IServiceCollection AddServiceBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<ServiceBus>()
@@ -143,7 +139,6 @@ public static class NativeInjector
 
         return services;
     }
-
     private static void ConfigureSerilog(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddOptions<Utils.Serilog>()
@@ -170,7 +165,6 @@ public static class NativeInjector
                 ])
             .CreateLogger();
     }
-
     private static void ConfigureOpenTelemetry(IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<DistributedTracing>()
