@@ -58,6 +58,8 @@ builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
+app.UseCors("AllowAllOrigins");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
