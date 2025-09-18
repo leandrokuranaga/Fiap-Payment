@@ -47,8 +47,4 @@ jobs:
 
       - name: Atualizar o serviço ECS
         run: |
-          aws ecs update-service \
-            --cluster ${{ secrets.ECS_CLUSTER }} \
-            --service ${{ secrets.ECS_SERVICE }} \
-            --task-definition ${{ steps.register.outputs.taskDefinitionArn }} \
-            --force-new-deployment
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER }} --service ${{ secrets.ECS_SERVICE }} --task-definition ${{ steps.register.outputs.taskDefinitionArn }} --force-new-deployment
