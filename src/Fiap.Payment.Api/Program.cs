@@ -66,8 +66,6 @@ app.UseAuthentication();
 app.UseMiddleware<UnauthorizedResponseMiddleware>();
 app.UseAuthorization();
 
-app.UseAuthorization();
-
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
 
