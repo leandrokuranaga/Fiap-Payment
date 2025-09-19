@@ -25,7 +25,6 @@ builder.Configuration.AddSystemsManager(source =>
 });
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCustomServices(builder.Configuration);
 builder.Services.AddCustomMvc();
 
