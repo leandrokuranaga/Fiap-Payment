@@ -1,5 +1,3 @@
-using Amazon;
-using Amazon.Extensions.NETCore.Setup;
 using Fiap.Payment.Api.Extensions;
 using Fiap.Payment.Api.Middlewares;
 using Fiap.Payment.Infra.CrossCutting.IoC;
@@ -8,30 +6,23 @@ using HealthChecks.ApplicationStatus.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
-var env = builder.Environment;
-
-builder.Configuration.Sources.Clear();
-
-var awsRegion = Environment.GetEnvironmentVariable("AWS_REGION") ?? "sa-east-1";
-var awsOptions = new AWSOptions { Region = RegionEndpoint.GetBySystemName(awsRegion) };
-builder.Services.AddDefaultAWSOptions(awsOptions);
-
-builder.Configuration.AddSystemsManager(src =>
-{
-    src.Path = "/myapp/prod/";             
-    src.Optional = true;                 
-    src.ReloadAfter = TimeSpan.FromMinutes(5);
-    src.AwsOptions = awsOptions;
-});
-
-if (env.IsDevelopment())
-{
-    builder.Configuration.AddUserSecrets<Program>(optional: true, reloadOnChange: true);
-}
 
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+#if DEBUG
+builder.Configuration.AddUserSecrets<Program>(optional: true, reloadOnChange: true);
+#endif
+
+builder.Configuration.AddSystemsManager(source =>
+{
+    source.Path = "/myapp/prod/";
+    source.Optional = true;
+    source.ReloadAfter = TimeSpan.FromMinutes(5);
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -50,30 +41,37 @@ builder.Services.AddOptions<StripeOptions>()
     .ValidateOnStart();
 
 var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<ConnectionStrings>()?.PaymentConnection;
-builder.Services.AddHealthChecks().AddMySql(conn!, "mysql").AddApplicationStatus();
+builder.Services
+    .AddHealthChecks()
+    .AddMySql(conn!, "mysql")
+    .AddApplicationStatus();
+
+builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddGlobalCorsPolicy();
+
 builder.Services.AddApiVersioningConfiguration();
+
 builder.Services.AddSwaggerDocumentation();
-builder.WebHost.UseUrls("http://0.0.0.0:80");
-builder.WebHost.UseUrls("http://0.0.0.0:8080");
-builder.WebHost.UseUrls("http://0.0.0.0:8081");
+
 var app = builder.Build();
+
+app.UseRouting();
+app.UseSwaggerDocumentation();
+app.UseHttpsRedirection();
 
 app.UseCors("AllowAllOrigins");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-
-app.UseSwaggerDocumentation();
-app.UseHttpsRedirection();
-app.UseRouting();
+app.UseAuthentication();
+app.UseMiddleware<UnauthorizedResponseMiddleware>();
 app.UseAuthorization();
+
+app.UseAuthorization();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.MapHealthChecks("/health");
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 app.Run();
 
 [ExcludeFromCodeCoverage]
