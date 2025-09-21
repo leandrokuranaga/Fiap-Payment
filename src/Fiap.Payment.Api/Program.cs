@@ -3,6 +3,7 @@ using Fiap.Payment.Api.Middlewares;
 using Fiap.Payment.Infra.CrossCutting.IoC;
 using Fiap.Payment.Infra.Utils;
 using HealthChecks.ApplicationStatus.DependencyInjection;
+using Prometheus;
 using System.Diagnostics.CodeAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,10 +40,14 @@ builder.Services.AddOptions<StripeOptions>()
     .Validate(o => !string.IsNullOrWhiteSpace(o.WebhookSecret), "Stripe:WebhookSecret missing")
     .ValidateOnStart();
 
-var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<ConnectionStrings>()?.PaymentConnection;
+var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<ConnectionStrings>();
 builder.Services
     .AddHealthChecks()
-    .AddMySql(conn!, "mysql")
+    .AddMySql(conn.PaymentConnection, "mysql")
+    .AddSqs(o =>
+        o.AddQueue(builder.Configuration.GetSection("ServiceBus:PaymentQueueName").ToString())
+    )
+    .AddEventStore(conn.EventStore)
     .AddApplicationStatus();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -67,6 +72,9 @@ app.UseAuthorization();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
+
+app.UseHttpMetrics();
+app.MapMetrics();
 
 app.MapHealthChecks("/health");
 app.Run();

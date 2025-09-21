@@ -3,5 +3,6 @@
     public class ConnectionStrings
     {
         public string PaymentConnection { get; set; }
+        public string EventStore { get; set; }
     }
 }
