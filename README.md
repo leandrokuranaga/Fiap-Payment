@@ -222,7 +222,6 @@ dotnet test --collect:"XPlat Code Coverage"
 - **Independência de Banco**: Repository pattern abstrai persistência
 
 ### 3. Patterns Implementados
-- **CQRS**: Separação de comandos e consultas
 - **Repository Pattern**: Abstração da camada de dados
 - **Unit of Work**: Transações atômicas
 - **Factory Pattern**: Criação de objetos complexos
