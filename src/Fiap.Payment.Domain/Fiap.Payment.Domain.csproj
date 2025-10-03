@@ -6,4 +6,22 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="PaymentAggregate\Enums\**" />
+    <EmbeddedResource Remove="PaymentAggregate\Enums\**" />
+    <None Remove="PaymentAggregate\Enums\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SeedWork\Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Abp" Version="9.4.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

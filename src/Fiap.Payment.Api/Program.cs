@@ -1,25 +1,89 @@
+using Fiap.Payment.Api.Extensions;
+using Fiap.Payment.Api.Middlewares;
+using Fiap.Payment.Infra.CrossCutting.IoC;
+using Fiap.Payment.Infra.Utils;
+using HealthChecks.ApplicationStatus.DependencyInjection;
+using Prometheus;
+using System.Diagnostics.CodeAnalysis;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+#if DEBUG
+builder.Configuration.AddUserSecrets<Program>(optional: true, reloadOnChange: true);
+#endif
+
+builder.Configuration.AddSystemsManager(source =>
+{
+    source.Path = "/myapp/prod/";
+    source.Optional = true;
+    source.ReloadAfter = TimeSpan.FromMinutes(5);
+});
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCustomServices(builder.Configuration);
+builder.Services.AddCustomMvc();
+
+builder.Services.AddOptions<ConnectionStrings>()
+    .Bind(builder.Configuration.GetSection(nameof(ConnectionStrings)))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<StripeOptions>()
+    .Bind(builder.Configuration.GetSection("Stripe"))
+    .Validate(o => !string.IsNullOrWhiteSpace(o.ApiKey), "Stripe:ApiKey missing")
+    .Validate(o => !string.IsNullOrWhiteSpace(o.WebhookSecret), "Stripe:WebhookSecret missing")
+    .ValidateOnStart();
+
+var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<ConnectionStrings>();
+builder.Services
+    .AddHealthChecks()
+    .AddMySql(conn.PaymentConnection, "mysql")
+    .AddSqs(o =>
+        o.AddQueue(builder.Configuration.GetSection("ServiceBus:PaymentQueueName").ToString())
+    )
+    .AddEventStore(conn.EventStore)
+    .AddApplicationStatus();
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddGlobalCorsPolicy();
+
+builder.Services.AddApiVersioningConfiguration();
+
+builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseRouting();
+app.UseSwaggerDocumentation();
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAllOrigins");
+
+app.UseAuthentication();
+app.UseMiddleware<UnauthorizedResponseMiddleware>();
 app.UseAuthorization();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
 
+app.UseHttpMetrics();
+app.MapMetrics();
+
+app.MapHealthChecks("/health");
 app.Run();
+
+[ExcludeFromCodeCoverage]
+public partial class Program { }
+
+public sealed class StripeOptions
+{
+    public string? ApiKey { get; set; }
+    public string? WebhookSecret { get; set; }
+}
