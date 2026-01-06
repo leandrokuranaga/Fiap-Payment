@@ -18,8 +18,8 @@ spec:
     spec:
       containers:
         - name: payment-api
-          image: fiap/payment-api:latest
-          imagePullPolicy: Never
+          image: kuranaga/fiap-payment:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               protocol: TCP

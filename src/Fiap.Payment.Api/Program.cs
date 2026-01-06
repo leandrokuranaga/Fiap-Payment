@@ -44,10 +44,6 @@ var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<Conne
 builder.Services
     .AddHealthChecks()
     .AddMySql(conn.PaymentConnection, "mysql")
-    .AddSqs(o =>
-        o.AddQueue(builder.Configuration.GetSection("ServiceBus:PaymentQueueName").ToString())
-    )
-    .AddEventStore(conn.EventStore)
     .AddApplicationStatus();
 
 builder.Services.AddEndpointsApiExplorer();
