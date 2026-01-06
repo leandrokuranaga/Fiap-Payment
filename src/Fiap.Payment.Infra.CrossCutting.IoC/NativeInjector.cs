@@ -160,7 +160,7 @@ public static class NativeInjector
                 uri: lokiUri,
                 labels:
                 [
-                    new() { Key = "app-payment", Value = "dotnet-api" },
+                    new() { Key = "app", Value = "fiap_payment" },
                     new() { Key = "env", Value = environment.EnvironmentName }
                 ])
             .CreateLogger();
