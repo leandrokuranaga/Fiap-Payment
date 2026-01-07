@@ -43,7 +43,6 @@ builder.Services.AddOptions<StripeOptions>()
 var conn = builder.Configuration.GetSection(nameof(ConnectionStrings)).Get<ConnectionStrings>();
 builder.Services
     .AddHealthChecks()
-    .AddMySql(conn.PaymentConnection, "mysql")
     .AddApplicationStatus();
 
 builder.Services.AddEndpointsApiExplorer();
