@@ -199,7 +199,7 @@ dotnet test --collect:"XPlat Code Coverage"
 | Ambiente | Status |
 | --- | --- |
 | Docker Hub | [![Docker Hub](https://github.com/leandrokuranaga/fiap-payment/actions/workflows/deploy-dockerhub.yml/badge.svg)](https://github.com/leandrokuranaga/fiap-payment/actions/workflows/deploy-dockerhub.yml) |
-| AWS ECS | [![AWS ECS](https://github.com/leandrokuranaga/fiap-payment/actions/workflows/deploy-aws.yml/badge.svg)](https://github.com/leandrokuranaga/fiap-payment/actions/workflows/deploy-aws.yml) |
+| AWS EKS | [![AWS EKS](https://github.com/leandrokuranaga/fiap-payment/actions/workflows/deploy-eks.yml/badge.svg)](https://github.com/leandrokuranaga/fiap-payment/actions/workflows/deploy-eks.yml) |
 
 ### Estratégia de Branching
 - **main**: Produção (releases)
