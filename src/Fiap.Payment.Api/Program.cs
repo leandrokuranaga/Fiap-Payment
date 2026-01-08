@@ -53,6 +53,8 @@ builder.Services.AddApiVersioningConfiguration();
 
 builder.Services.AddSwaggerDocumentation();
 
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["ApplicationInsights:InstrumentationKey"]);
+
 var app = builder.Build();
 
 app.UseRouting();
